@@ -1,35 +1,38 @@
-import mongoose from 'mongoose';  
+import mongoose, { Schema, Document } from 'mongoose';
+import * as bcrypt from 'bcrypt';
 import { ObjectId } from 'mongodb';
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
-  
-export type BookingDocument = HydratedDocument<Booking>;
 
-@Schema()
-export class Booking {
-  @Prop({ type: String, required: true })
-  booking_date: string;
-
-  @Prop({ type: String, required: true })
-  checkout_date: string;
-
-  @Prop({ type: String, required: true })
-  room_alloted: string;
-
-  @Prop({ type: String, required: true })
-  room_type: string;
-
-  @Prop({ type: String, required: true})
-  hotel: string;
-
-  @Prop({ type: Number, required: true })
-  identity_type: number;
-  
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Hotel', required: true })
-  hote_id: ObjectId;
-
-  @Prop({ type: String, required: true })
-  customer_email: string;
+export interface Booking extends Document {  
+   
+    
+    booking_date: string,
+    checkout_date: string,
+    room_alloted: string,
+    room_type: string,
+    identity_type: number ,
+    hotel: string;
+    hote_id: ObjectId;
+    customer_email: string;
+    customer_name: string;
+    
 }
 
-export const BookingSchema = SchemaFactory.createForClass(Booking);
+export const BookingSchema: Schema = new Schema({
+ 
+
+ cusId: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer',},   
+ booking_date:{ type: Date, required: true }, 
+ checkout_date: { type: Date, required: true },
+ room_alloted: { type: Number, required: true },
+ room_type: { type: String, required: true },
+ identity_type: { type: String, required: true },
+ hote_id: { type: ObjectId, required: true},
+ hotel: { type:String},
+ customer_email: { type: String},
+ customer_name: { type: String},
+ 
+  
+});
+
+
+export const Booking = mongoose.model<Booking>('Booking', BookingSchema);
