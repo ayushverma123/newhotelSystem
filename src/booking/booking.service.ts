@@ -8,16 +8,18 @@ import { Customar } from 'src/entities/customer.entity';
 import { GetQueryDto } from './dto/query-dto';
 import { BookingInterfaceResponse } from './interface/BookingResponse-interface';   
 
+
 @Injectable()
 export class BookingService {
-  constructor(@InjectModel(Booking.name) private readonly bookingModel: Model<Booking>,   
-              @InjectModel(Customar.name) private readonly customerModel: Model<Customar>) { }
+  constructor(@InjectModel('Booking') private readonly bookingModel: Model<Booking>,
+  @InjectModel('Hotel') private readonly hotelModel: Model<Hotel>,
+    @InjectModel('Customer') private readonly customerModel: Model<Customer>) { }
 
-  async createBooking(
-    createBookingDto: CreateBookingDto
-  ): Promise<BookingInterfaceResponse | null > { 
-    const { cusId, ...bookingData } = createBookingDto;
+  async createBooking(createBookingDto: CreateBookingDto): Promise<BookingInterfaceResponse | null > {   
+    const { cusId, hote_id, ...bookingData } = createBookingDto;
     const customer = await this.customerModel.findById(cusId);
+    const hotel = await this.hotelModel.findById(hote_id);
+    console.log(hotel);
     if (!customer) {
       throw new NotFoundException("Invalid customer");
     }
@@ -25,6 +27,11 @@ export class BookingService {
       ...bookingData,
       cusId: customer._id,
       customerID: customer._id,
+      hote_id: hotel._id,
+      hotel: hotel.hotel_name,
+      customer_name: customer.firstName,
+
+
     };
 
     const existingBooking = await this.bookingModel.findOne({
