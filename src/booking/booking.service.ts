@@ -2,12 +2,12 @@ import { InternalServerErrorException, NotFoundException } from '@nestjs/common'
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, SortOrder } from 'mongoose';
-import { Booking } from 'src/entities/booking.entity';
-import { CreateBookingDto } from './dto/createBooking-dto';
-import { Customar } from 'src/entities/customer.entity';
+import { Booking } from '../entities/booking.schema';
+import { CreateBookingDto } from './dto/createBooking-dto';    
+import { Customer } from 'src/entities/customer.schema';
 import { GetQueryDto } from './dto/query-dto';
 import { BookingInterfaceResponse } from './interface/BookingResponse-interface';   
-
+import { Hotel } from 'src/entities/hotel.schema';
 
 @Injectable()
 export class BookingService {
@@ -57,30 +57,27 @@ export class BookingService {
     }
   }
 
-  async getFilteredBookings(queryDto: GetQueryDto): Promise<any> {
-    const { search,
-            limit, 
-            pageNumber, 
-            pageSize, 
-            fromDate, 
-            toDate, 
-            sortField, 
-            sortOrder
-          } = queryDto;
+
+  async getFilteredBookings(queryDto: GetQueryDto): Promise<any> {  
+    const { search, limit, pageNumber, pageSize, fromDate, toDate, sortField, sortOrder } = queryDto;
     const query = this.bookingModel.find();
 
     if (search) {
-      query.or([
+      query.or([ 
         { HotelName: { $regex: search, $options: 'i' } },
         { identity_type: { $regex: search, $options: 'i' } },
         { cus_email: { $regex: search, $options: 'i' } },
         { room_type: { $regex: search, $options: 'i' } },
+
+
       ]);
     }
+
     if (pageNumber && pageSize) {
       const skip = (pageNumber - 1) * pageSize;
       query.skip(skip).limit(pageSize);
     }
+
     if (fromDate && toDate) {
       query.where({
         booking_date: {
@@ -89,15 +86,15 @@ export class BookingService {
         },
       });
     }
+
     if (sortField && sortOrder) {
       const sortOptions: [string, SortOrder][] = [[sortField, sortOrder as SortOrder]];
       query.sort(sortOptions);
     }
 
     const data = await query.exec();
-    const totalRecords = await this.bookingModel
-    .find(query.getFilter())
-    .countDocuments();
+    const totalRecords = await this.bookingModel.find(query.getFilter()).countDocuments(); 
+  
     return { data, totalRecords };
   }
 
@@ -106,7 +103,7 @@ export class BookingService {
   }
 
   async getAllBookings(): Promise<any> {
-    return this.bookingModel.find().exec();
+    return this.bookingModel.find().exec();  
   }
 
   async getAllBooking(): Promise<Booking[]> {
@@ -144,14 +141,13 @@ export class BookingService {
 
   async getBookingById(id: string): Promise<BookingInterfaceResponse> {
     try {
-      const FoundBooking = await this.bookingModel
-      .findById(id)
-      .exec();
+      const FoundBooking = await this.bookingModel.findById(id).exec();
   
       if (!FoundBooking) {  
         throw new NotFoundException('Unable to find booking');
       }
       else {
+
         return {
           code: 200,
           message: 'Booking found successfully',   
@@ -159,29 +155,27 @@ export class BookingService {
           data: FoundBooking,
         };
       }
-    } catch (error) {
+    }  
+    catch (error) {
       // Handle the specific CastError here
       if (error) {
         throw new NotFoundException('Invalid hotel ID');
       }
+
       // Handle other potential errors or rethrow them
       throw error;
     }
   }
 
-  async updateBooking(
-    id: string,
-    updateBookingDto: CreateBookingDto
-  ): Promise<BookingInterfaceResponse> { 
+  async updateBooking(id: string, updateBookingDto: CreateBookingDto): Promise<BookingInterfaceResponse> { 
     try {
-      const updatedBooking = await this.bookingModel
-      .findByIdAndUpdate(id, updateBookingDto, { new: true })
-      .exec();
+      const updatedBooking = await this.bookingModel.findByIdAndUpdate(id, updateBookingDto, { new: true }).exec();
 
       if (!updatedBooking) {
         throw new NotFoundException('Unable to update booking');
       }
       else {
+
         return {
           code: 200,
           message: 'Booking updated successfully',
@@ -189,15 +183,22 @@ export class BookingService {
           data: updatedBooking,
         };
       }
-    } catch (error) {
+    }
+    catch (error) {
       // Handle the specific CastError here
       if (error) {
         throw new NotFoundException('Invalid booking ID');
       }
+
       // Handle other potential errors or rethrow them
       throw error;
     }
   }
+  /*
+ async updateBooking(id: string, updateBookingDto: CreateBookingDto): Promise<Booking | null> {
+   return this.bookingModel.findByIdAndUpdate(id, updateBookingDto, { new: true }).exec();
+ }
+ */
 
   async deleteBooking(id: string): Promise<BookingInterfaceResponse | null> {
     const deletedBooking = await this.bookingModel.findByIdAndDelete(id);
@@ -205,6 +206,7 @@ export class BookingService {
     if (!deletedBooking) {
       throw new InternalServerErrorException('Unable to delete boooking');
     }
+
     return {
       code: 200,
       message: 'Booking deleted successfully',
@@ -212,12 +214,11 @@ export class BookingService {
       data: deletedBooking,
     };
   }
+   
 
   async deleteBookingnew(id: string): Promise<BookingInterfaceResponse> {
     try {
-      const deletedBooking = await this.bookingModel
-      .findByIdAndDelete(id)
-      .exec();
+      const deletedBooking = await this.bookingModel.findByIdAndDelete(id).exec();
 
       if (!deletedBooking) {
         throw new NotFoundException('Unable to delete booking');
@@ -242,12 +243,14 @@ export class BookingService {
     }
   }   
 
+
   async cancelBooking(id: string): Promise<BookingInterfaceResponse | null> {
     const deletedBooking = await this.bookingModel.findByIdAndDelete(id);
 
     if (!deletedBooking) {
       throw new InternalServerErrorException('Boooking already canceled');
     }
+
     return {
       code: 200,
       message: 'Booking canceled successfully',   
