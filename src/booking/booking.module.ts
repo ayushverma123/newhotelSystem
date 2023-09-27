@@ -1,22 +1,15 @@
-import { Customar } from 'src/entities/customer.entity';
-import { BookingSchema } from 'src/entities/booking.entity';
-import { Booking } from 'src/entities/booking.entity';
+
+import { BookingSchema } from '../entities/booking.schema';  
 import { MongooseModule } from '@nestjs/mongoose';
 import { Module } from '@nestjs/common';
-import { BookingController } from './booking.controller';
+import { BookingController } from './booking.controller';  
 import { BookingService } from './booking.service';
-import { CustomerSchema } from 'src/entities/customer.entity';
-import { JwtService } from '@nestjs/jwt';
-
+import { CustomerSchema } from 'src/entities/customer.schema';
+import { HotelSchema } from 'src/entities/hotel.schema';
 @Module({
-  imports: [
-    MongooseModule.forFeature([
-      { name: Booking.name, schema: BookingSchema },
-      { name: Customar.name, schema: CustomerSchema }
-    ]),
-  ],
+  imports: [MongooseModule.forFeature([{ name: 'Booking', schema: BookingSchema }, { name: 'Customer', schema: CustomerSchema } ,{ name: 'Hotel', schema: HotelSchema },]),],  
   controllers: [BookingController],
-  providers: [BookingService, JwtService],
+  providers: [BookingService],
   exports: [BookingService]
 })
-export class BookingModule { }
+export class BookingModule {}   
