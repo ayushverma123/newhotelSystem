@@ -4,5 +4,5 @@ export interface BookingInterfaceResponse {
   message: string;
   status: string;
   data: Booking;
-
+  
 }

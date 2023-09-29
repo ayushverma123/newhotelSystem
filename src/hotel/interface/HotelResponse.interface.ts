@@ -1,4 +1,4 @@
-import { Hotel } from "src/entities/hotel.entity";
+import { Hotel } from "src/entities/hotel.entity";  
 
 export interface HotelInterfaceResponse {
   code: number;

@@ -1,3 +1,4 @@
+import { UpdateCustomerDto } from './dto/updateCustomer-dto';
 import * as bcrypt from 'bcrypt';
 import { CustomerInterfaceResponse } from './interface/CustomerResponse.interface';
 import { InternalServerErrorException, NotFoundException } from '@nestjs/common';
@@ -149,12 +150,12 @@ export class CustomerService {
 
   async findOneWithUserName(username: string) {
 
-    return await this.customerModel.findOne({ email: username });
+    return await this.customerModel.findOne({ email: username }); 
   }
 
   async updateCustomer(
     id: string,
-    updateCustomerDto: CreateCustomerDto
+    updateCustomerDto: UpdateCustomerDto
   ): Promise<CustomerInterfaceResponse> {
     try {
       const updatedCustomer = await this.customerModel

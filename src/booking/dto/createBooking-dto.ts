@@ -5,14 +5,8 @@ import { IsNumber,
          IsString,
          IsNotEmpty,
          IsMongoId 
-       } from 'class-validator';
-
+        } from 'class-validator';
 export class CreateBookingDto {
-
-    @ApiProperty()
-    @IsMongoId()
-    @IsNotEmpty()
-    cusId: ObjectId;
 
     @ApiProperty()
     @IsString()

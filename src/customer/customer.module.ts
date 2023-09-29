@@ -6,7 +6,7 @@ import { CustomerController } from './customer.controller';
 import { CustomerService } from './customer.service';
 import { JwtService } from '@nestjs/jwt';
 import { Otp, OtpSchema } from 'src/entities/otp.entity';
- 
+
 @Module({
   imports: [
     MongooseModule.forFeature([

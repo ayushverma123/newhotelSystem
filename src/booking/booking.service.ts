@@ -7,6 +7,7 @@ import { CreateBookingDto } from './dto/createBooking-dto';
 import { Customar } from 'src/entities/customer.entity';
 import { GetQueryDto } from './dto/query-dto';
 import { BookingInterfaceResponse } from './interface/BookingResponse-interface';   
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class BookingService {
@@ -14,22 +15,25 @@ export class BookingService {
               @InjectModel(Customar.name) private readonly customerModel: Model<Customar>) { }
 
   async createBooking(
-    createBookingDto: CreateBookingDto
+    createBookingDto: CreateBookingDto,
+    id: string
   ): Promise<BookingInterfaceResponse | null > { 
-    const { cusId, ...bookingData } = createBookingDto;
-    const customer = await this.customerModel.findById(cusId);
+    const {...bookingData } = createBookingDto;
+    const customer = await this.customerModel.findById(id);
+    const check= await this.customerModel.findOne({_id:id})
+    console.log(check);
+    console.log(id);
     if (!customer) {
       throw new NotFoundException("Invalid customer");
     }
     const newBookingData = {
       ...bookingData,
-      cusId: customer._id,
       customerID: customer._id,
     };
 
     const existingBooking = await this.bookingModel.findOne({
       hote_id: createBookingDto.hote_id,
-      cusId: customer._id,
+      _id:id
     });
 
     if (existingBooking) {
@@ -83,7 +87,9 @@ export class BookingService {
       });
     }
     if (sortField && sortOrder) {
-      const sortOptions: [string, SortOrder][] = [[sortField, sortOrder as SortOrder]];
+      const sortOptions: [string, SortOrder][] = [
+        [sortField, sortOrder as SortOrder]
+      ];
       query.sort(sortOptions);
     }
 
@@ -170,7 +176,7 @@ export class BookingService {
       const updatedBooking = await this.bookingModel
       .findByIdAndUpdate(id, updateBookingDto, { new: true })
       .exec();
-
+          
       if (!updatedBooking) {
         throw new NotFoundException('Unable to update booking');
       }

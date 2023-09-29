@@ -3,7 +3,7 @@ import { ApiOkResponse, ApiNotFoundResponse } from '@nestjs/swagger';
 import { ApiCreatedResponse, ApiForbiddenResponse } from '@nestjs/swagger';
 import { UsePipes } from '@nestjs/common/decorators';
 import { ValidationPipe } from '@nestjs/common/pipes';
-import { Controller, Get, Post, Put, Delete, Param, Body, Query } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, Query, Req } from '@nestjs/common';
 import { CreateBookingDto } from './dto/createBooking-dto';
 import { BookingService } from './booking.service';
 import { GetQueryDto } from './dto/query-dto';
@@ -36,9 +36,11 @@ export class BookingController {
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @Post('create')
   async createBooking(
+    @Req() req: any, 
     @Body() createBookingDto: CreateBookingDto
   ): Promise<BookingInterfaceResponse | null > {
-    return this.bookingService.createBooking(createBookingDto);
+    const id=req.user.id;
+    return this.bookingService.createBooking(createBookingDto, id);
   }
 
   @UseGuards(JwtGuard)

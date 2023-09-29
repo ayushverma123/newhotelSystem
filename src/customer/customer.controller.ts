@@ -6,11 +6,12 @@ import { ApiTags } from '@nestjs/swagger';
 import { NotFoundException } from '@nestjs/common/exceptions';
 import { ValidationPipe } from '@nestjs/common';
 import { UsePipes } from '@nestjs/common';
-import { Controller, Get, Post, Put, Delete, Param, Body, Query, UseGuards, Req} from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, Query, UseGuards, Req} from '@nestjs/common';  
 import { CreateCustomerDto } from './dto/createCustomer-dto';
 import { CustomerService } from './customer.service';
 import { GetQueryDto } from './dto/query-dto';
 import { CustomerInterfaceResponse } from './interface/CustomerResponse.interface';
+import { UpdateCustomerDto } from './dto/updateCustomer-dto';
 
 @ApiTags('Customers')
 @Controller('customers')
@@ -27,7 +28,9 @@ export class CustomerController {
   @ApiOkResponse({ description: 'Successfully retrieved customer.' })
   @ApiNotFoundResponse({ description: 'Customer not found.' })
   @Get('getbyid/:id')
-  async getCustomerById(@Param('id') id: string): Promise<CustomerInterfaceResponse | null> {
+  async getCustomerById(
+    @Param('id') id: string
+  ): Promise<CustomerInterfaceResponse | null> {
     return this.customerService.getCustomerById(id);
   }
   
@@ -46,7 +49,7 @@ export class CustomerController {
   @Put('updatebyid/:id')
   async updateCustomer(
     @Param('id') id: string,
-    @Body() updateCustomerDto: CreateCustomerDto,
+    @Body() updateCustomerDto: UpdateCustomerDto,
   ): Promise<CustomerInterfaceResponse | null> {
     return this.customerService.updateCustomer(id, updateCustomerDto);
   }  
@@ -55,7 +58,7 @@ export class CustomerController {
   @ApiOkResponse({ description: 'Successfully retrieved customer.' })
   @ApiNotFoundResponse({ description: 'Customer not found.' })
   @Delete('deletebyid/:id')
-  async deleteCustomer(@Param('id') id: string): Promise<CustomerInterfaceResponse | null> {
+  async deleteCustomer(@Param('id') id: string): Promise<CustomerInterfaceResponse | null> { 
     return this.customerService.deleteCustomer(id);
   }
 

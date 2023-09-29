@@ -9,9 +9,9 @@ export enum Role {
 
 @Schema()
 export class Customar {
-  @Prop({ type: String, required: true })
+  @Prop({ type: String, required: true })  
   firstName: string;
-
+  
   @Prop({ type: String, required: true })
   lastName: string;
 
@@ -24,7 +24,11 @@ export class Customar {
   @Prop({ type: Date, required: true })
   date_of_birth: Date;
 
-  @Prop({type: String, enum: [Role.Admin, Role.Customer], default: Role.Customer })
+  @Prop({
+    type: String,
+    enum: [Role.Admin, Role.Customer],
+    default: Role.Admin 
+  })
   role: Role;
 
   @Prop({ type: String, required: true })

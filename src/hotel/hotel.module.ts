@@ -9,11 +9,11 @@ import { JwtService } from '@nestjs/jwt';
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: Hotel.name, schema: HotelSchema }
-    ]),
+      { name: Hotel.name, schema: HotelSchema }   
+    ]), 
   ],
   controllers: [HotelController],
   providers: [HotelService, JwtService],
   exports: [HotelService]
 })
-export class HotelModule { }
+export class HotelModule { }  

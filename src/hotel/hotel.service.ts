@@ -7,7 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Hotel } from 'src/entities/hotel.entity';
 import { CreateHotelDto } from './dto/createHotel-dto';
-import { HotelInterfaceResponse } from './interface/HotelResponse.interface';
+import { HotelInterfaceResponse } from './interface/HotelResponse.interface'; 
 import { GetQueryDto } from './dto/query-dto';
 
 @Injectable()
@@ -52,7 +52,7 @@ export class HotelService {
             sortOrder
           } = queryDto;
     const query = this.hotelModel.find();
-  
+
     if (search) {
       query.or([
         { hotel_name: { $regex: search, $options: 'i' } },
@@ -62,7 +62,7 @@ export class HotelService {
         { address: { $regex: search, $options: 'i' } },
       ]);
     }
-  
+    
     if (pageNumber && pageSize) {
       const skip = (pageNumber - 1) * pageSize;
       query.skip(skip).limit(pageSize);
@@ -97,7 +97,7 @@ export class HotelService {
           status: 'success',
           data: Hotel,
         };
-      }
+      }  
     } catch (error) {
       // Handle the specific CastError here
       if (error) {
@@ -138,7 +138,7 @@ export class HotelService {
       throw error;
     }
   }
- 
+
   async deleteHotel(id: string): Promise<HotelInterfaceResponse> {
     try {
       const deletedHotel = await this.hotelModel

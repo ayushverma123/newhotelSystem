@@ -7,7 +7,6 @@ import { BookingController } from './booking.controller';
 import { BookingService } from './booking.service';
 import { CustomerSchema } from 'src/entities/customer.entity';
 import { JwtService } from '@nestjs/jwt';
-
 @Module({
   imports: [
     MongooseModule.forFeature([
